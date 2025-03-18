@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"reflect"
 	"time"
 
 	"github.com/gopcua/opcua"
@@ -23,9 +24,24 @@ func main() {
 	}
 	defer client.Close()
 
+	log.Print("test read gripper start val: ")
 	opc.GetNodeValue(tags.InputGripperStart, client)
+	log.Println()
 
-	opc.WriteNodeValue(tags.OutputConveyorRight, "true", client)
+	log.Print("test read box down val: ")
+	opc.GetNodeValue(tags.InputBoxIsDown, client)
+	log.Println()
+
+	testWrite(true, false, client)
+	testWrite("true", "false", client)
+	testWrite(1, 0, client)
+}
+
+func testWrite[T any](startVal, endVal T, client *opcua.Client) {
+	log.Printf("start example of type %s\n", reflect.TypeOf(startVal))
+	defer log.Printf("end example of type %s\n", reflect.TypeOf(startVal))
+
+	opc.WriteNodeValue(tags.OutputConveyorRight, startVal, client)
 	time.Sleep(time.Second * 5)
-	opc.WriteNodeValue(tags.OutputConveyorRight, "false", client)
+	opc.WriteNodeValue(tags.OutputConveyorRight, endVal, client)
 }

@@ -67,7 +67,7 @@ func GetNodeValue(nodeId string, client *opcua.Client) {
 	log.Printf("%#v", resp.Results[0].Value.Value())
 }
 
-func WriteNodeValue(nodeId, value string, client *opcua.Client) {
+func WriteNodeValue[T any](nodeId string, value T, client *opcua.Client) {
 	id, err := ua.ParseNodeID(nodeId)
 	if err != nil {
 		log.Fatal(err)
